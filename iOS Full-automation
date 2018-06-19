@@ -1,0 +1,167 @@
+iOS Full-automation
+
+->Automation tools - (i) Appium 
+                     (ii) Eclipse - Oxygen
+
+->Installation - 
+ (i) Appium - 
+      
+    1) Install latest JDK version - Java - "1.8.0_102" version or above and set Java Home Path using terminal - $ echo export "JAVA_HOME=\$(/usr/libexec/java_home)" >> ~/.profile
+    
+    Note : Check installation using: $ java -version
+
+      
+    2) Set up Android SDK/(Android Studio) - Install Android SDK from: 
+                                            https://developer.android.com/studio/#downloads
+                                            Scroll down a bit and find the section marked "Get just the command line tools"
+
+                                            - Set ANDROID_HOME: $ export ANDROID_HOME=/Users/krishna/Library/Android/sdk
+
+                                            - Set path of tools and platform tools using Android HOME export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools 
+
+
+      Note : The path mentioned above for ANDROID_HOME is an example, it is actually the path where your sdk folder is present.
+
+    3) Set Maven Path:  - Download maven from https://maven.apache.org/download.cgi
+                        - Set up Path $ echo export "M2_HOME=PATH where maven downloaded” >> ~/.profile 
+
+    4) Set Bash Profile.    
+
+     Run command in terminal: $ vi ~/.bash_profile It should look like as below.        
+
+     export JAVA_HOME=$(/usr/libexec/java_home) 
+     export M2_HOME=/Users/XXXXXX/Desktop/softwares/maven/ 
+     export ANDROID_HOME=/Users/XXXXXX/Desktop/softwares/AndroidSDK/androidsdk 
+     export PATH=${PATH}:${JAVA_HOME}/bin 
+     export PATH=${PATH}:${M2_HOME}/bin 
+     export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools 
+
+    5) Install latest Xcode Desktop Version from the app store.
+
+    6) Install Xocde command line (download .dmg or use Command: $ xcode-select --install)  
+
+    7) Install Homebrew with command line: $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" 
+
+    8) Install Node with command line: $ brew install node
+        -test for node using : $ node -v
+
+    9) Install Node: $ brew install npm 
+
+    10) Install Carthage: $ npm install carthage 
+
+    11) Install Appium Command line: $ brew install -g appium 
+         -for particular version (eg: 1.8.0): $ brew install -g appium@1.8.0
+         or
+         use: $ npm install -g appium@1.8.0
+
+    12) Install Appium Doctor: $ npm install -g appium-doctor
+         -check whether all paths and dependencies are installed using: $ appium doctor
+
+    13) Install lib: $ brew install libimobiledevice --HEAD
+         -this is for real device testing.
+
+    14) Install iOS deploy lib: $ npm install -g ios-deploy
+
+    15) Download appium desktop from: www.appium.io 
+
+    16) Now, you need to setup the WebDriver agent to test on real devices else you will recieve and error under code -65. Hence follow the steps given in 
+    
+    http://appium.io/docs/en/drivers/ios-xcuitest-real-devices/  
+    or
+    https://www.linkedin.com/pulse/appium-ver-171-setup-mac-os-sierra-ios-real-device-suraj-salunkhe
+
+
+ (ii) Eclipse - 
+
+    1) Download eclipse - Oxygen for mac: http://www.eclipse.org/downloads/packages/release/Oxygen/M2
+
+    2) After installing eclipse oxygen: - Go to eclipse market place and install testNg suit.
+
+                                         - Download Maven dependencies for your eclipse from the eclipse market place.
+    3) Create a new Maven project and in the pom.xml add contents of: https://github.com/code-krishna/General-Files/blob/master/pom.xml
+       -this includes all jars required for running appium.
+
+    4) Convert the Maven project to TestNG project.
+
+    5) In c
+
+
+                        ----You are all set for your new automation project----
+
+
+->Running test using the provided framework - 
+  
+ (i) Seting up the framework - 
+
+    1) In eclipse, File -> Import -> git -> URL
+       Clone project into eclipse using URL - https://code_krishna@bitbucket.org/rajeev_mishra_datami/datamisd_automation.git
+       or
+       https://bitbucket.org/rajeev_mishra_datami/datamisd_automation/pull-requests/new?source=iOS&t=1
+
+       Under branch iOS. 
+
+    2) Before runnig the project setup environment variable for the project.
+
+    3) Under Run -> Run Configurations... -> Environment -> add ->
+       Name: PATH
+       Value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/krishna/Library/Android/sdk/tools:/usr/local/Cellar/libimobiledevice/1.2.0_2/bin
+
+    Note: Not following this step properly may lead to error of "WebDriver agent not found". Also the path name varies according to the system name (here it is 'krishna').
+
+
+ (ii) Running your first suite - 
+
+    1) Open Xcode and under Window -> Devices and Simulators you will find your device udid and device version.
+
+    2) Add this information in the eclipse Test.xml file.
+
+    3) Run the Test.xml as TestNG project.
+
+    4) You should see appium server starting itself.
+
+    Note: Incase the port is busy use - $ netstat -vanp tcp|grep 4723
+          to check 'pid' of process at 4723 port and kill the process 
+          using - $ kill -9 <pid>
+ 
+->Details about the test - 
+   
+ (i) Initialisation - 
+
+    1) The initial conditions of the testing environment requires user to turnoff iMessages and notifications of the devices as they may interrupt the automation process.
+
+    2) The Reseting of data usage of various apps is done by the framework itself in the begining.
+
+    3) Next the framework establishes intial conditions of switching off wifi and flight mode, enabling network data, etc to begin the testing of the app.
+   
+ (ii) Testing - 
+
+    The tests are basically upon the "Endless" iOS app to check how it behaves under different situations of the iOS devices. The tests are as follows:
+
+    1) Pop up verification with mobile data on - expected to produce a pop-up else test fails.
+
+    2) Wifi On Mobile Data On - expected not to produce a pop-up else test fails.
+
+    3) Wifi Off Mobile Data On - expected to produce a pop-up else test fails.
+
+    4) Flight mode On Wifi Off - expected not to produce a pop-up else test fails.
+
+    5) Flight mode On Wifi On - expected not to produce a pop-up else test fails.
+
+    6) Flight mode Off Wifi On - expected not to produce a pop-up else test fails.
+
+    7) Tag Update in the app.
+
+    8) UserId Update in the app.
+
+    9) Data usage Verification which reports the amount of leak in data - if leak is more than 5 percent, the test fails.
+
+->Test analyses - 
+
+ (i) The reports of the test can be found at TestNG outputs.
+
+ (ii) The average running time of the test is 14 mins in apple Mac mini.
+
+
+
+
+
